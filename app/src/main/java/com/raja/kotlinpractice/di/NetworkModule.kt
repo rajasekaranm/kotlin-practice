@@ -1,6 +1,7 @@
 package com.raja.kotlinpractice.di
 
-import com.raja.kotlinpractice.data.remote.PracticeApiService
+import com.raja.kotlinpractice.data.remote.AccountApiService
+import com.raja.kotlinpractice.data.remote.AuthApiService
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -10,6 +11,11 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun providePracticeApiService(retrofit: Retrofit): PracticeApiService =
-        retrofit.create(PracticeApiService::class.java)
+    fun provideAuthApiService(retrofit: Retrofit): AuthApiService =
+        retrofit.create(AuthApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAccountApiService(retrofit: Retrofit): AccountApiService =
+        retrofit.create(AccountApiService::class.java)
 }

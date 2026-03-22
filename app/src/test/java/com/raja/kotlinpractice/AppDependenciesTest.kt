@@ -1,27 +1,21 @@
 package com.raja.kotlinpractice
 
-import com.raja.kotlinpractice.data.local.SettingsRepository
-import com.raja.kotlinpractice.data.remote.PracticeApiService
+import androidx.lifecycle.ViewModelProvider
+import com.raja.kotlinpractice.ui.viewmodel.AppViewModelFactory
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertSame
 import org.junit.Test
 
 class AppDependenciesTest {
     @Test
-    fun summary_lists_added_libraries() {
+    fun provideViewModelFactory_returnsInjectedFactory() {
+        val factory = mockk<AppViewModelFactory>(relaxed = true)
         val dependencies = AppDependencies(
-            settingsRepository = mockk<SettingsRepository>(),
-            apiService = mockk<PracticeApiService>(),
-            ioDispatcher = Dispatchers.Unconfined,
+            viewModelFactory = factory,
         )
 
-        val summary = dependencies.summary()
+        val exposedFactory: ViewModelProvider.Factory = dependencies.provideViewModelFactory()
 
-        assertTrue(summary.contains("Dagger 2"))
-        assertTrue(summary.contains("DataStore"))
-        assertTrue(summary.contains("Retrofit"))
-        assertTrue(summary.contains("Kotlin Coroutines"))
-        assertTrue(summary.contains("MockK"))
+        assertSame(factory, exposedFactory)
     }
 }
