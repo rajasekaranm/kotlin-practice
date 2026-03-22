@@ -4,16 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,17 +21,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.raja.kotlinpractice.ui.viewmodel.AccountUiState
+import com.raja.kotlinpractice.ui.auth.AuthLauncherScreen
+import com.raja.kotlinpractice.ui.screens.AccountScreen
+import com.raja.kotlinpractice.ui.screens.FavouriteScreen
+import com.raja.kotlinpractice.ui.screens.HomeScreen
 import com.raja.kotlinpractice.ui.viewmodel.AccountViewModel
-import com.raja.kotlinpractice.ui.viewmodel.AuthUiState
 import com.raja.kotlinpractice.ui.viewmodel.AuthViewModel
-import com.raja.kotlinpractice.ui.viewmodel.HomeUiState
+import com.raja.kotlinpractice.ui.viewmodel.FavouriteViewModel
 import com.raja.kotlinpractice.ui.viewmodel.HomeViewModel
 import com.raja.kotlinpractice.ui.theme.KotlinPracticeTheme
 import javax.inject.Inject
@@ -63,8 +59,19 @@ fun KotlinPracticeApp(
 ) {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
     val factory = viewModelFactory ?: PreviewViewModelFactory()
-    val homeViewModel: HomeViewModel = viewModel(factory = factory)
     val authViewModel: AuthViewModel = viewModel(factory = factory)
+    val isAuthenticated = authViewModel.uiState.isAuthenticated
+
+    if (!isAuthenticated) {
+        AuthLauncherScreen(
+            viewModel = authViewModel,
+            modifier = Modifier.fillMaxSize()
+        )
+        return
+    }
+
+    val homeViewModel: HomeViewModel = viewModel(factory = factory)
+    val favouriteViewModel: FavouriteViewModel = viewModel(factory = factory)
     val accountViewModel: AccountViewModel = viewModel(factory = factory)
 
     NavigationSuiteScaffold(
@@ -91,9 +98,8 @@ fun KotlinPracticeApp(
                     modifier = Modifier.padding(innerPadding)
                 )
 
-                AppDestinations.AUTH -> AuthScreen(
-                    uiState = authViewModel.uiState,
-                    repositoryName = authViewModel.repositoryName(),
+                AppDestinations.FAVOURITE -> FavouriteScreen(
+                    uiState = favouriteViewModel.uiState,
                     modifier = Modifier.padding(innerPadding)
                 )
 
@@ -112,78 +118,8 @@ enum class AppDestinations(
     val icon: ImageVector,
 ) {
     HOME("Home", Icons.Default.Home),
-    AUTH("Auth", Icons.Default.Favorite),
+    FAVOURITE("Favourite", Icons.Default.Favorite),
     ACCOUNT("Account", Icons.Default.AccountBox),
-}
-
-@Composable
-fun HomeScreen(uiState: HomeUiState, modifier: Modifier = Modifier) {
-    ScreenCard(
-        title = uiState.title,
-        body = uiState.summary,
-        modifier = modifier
-    )
-}
-
-@Composable
-fun AuthScreen(
-    uiState: AuthUiState,
-    repositoryName: String,
-    modifier: Modifier = Modifier,
-) {
-    ScreenCard(
-        title = uiState.title,
-        body = buildString {
-            appendLine("Repository: $repositoryName")
-            appendLine("Base URL: ${uiState.endpointBaseUrl}")
-            appendLine()
-            append(uiState.actions.joinToString(separator = "\n") { "- $it" })
-        },
-        modifier = modifier
-    )
-}
-
-@Composable
-fun AccountScreen(
-    uiState: AccountUiState,
-    repositoryName: String,
-    modifier: Modifier = Modifier,
-) {
-    ScreenCard(
-        title = uiState.title,
-        body = buildString {
-            appendLine("Repository: $repositoryName")
-            appendLine()
-            append(uiState.actions.joinToString(separator = "\n") { "- $it" })
-        },
-        modifier = modifier
-    )
-}
-
-@Composable
-fun ScreenCard(
-    title: String,
-    body: String,
-    modifier: Modifier = Modifier,
-) {
-    Card(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(
-                text = title,
-                fontWeight = FontWeight.Bold
-            )
-            Text(text = body)
-        }
-    }
 }
 
 @Preview(showBackground = true)
@@ -200,6 +136,9 @@ private class PreviewViewModelFactory : ViewModelProvider.Factory {
         return when {
             modelClass.isAssignableFrom(HomeViewModel::class.java) ->
                 HomeViewModel() as T
+
+            modelClass.isAssignableFrom(FavouriteViewModel::class.java) ->
+                FavouriteViewModel() as T
 
             modelClass.isAssignableFrom(AuthViewModel::class.java) ->
                 AuthViewModel(

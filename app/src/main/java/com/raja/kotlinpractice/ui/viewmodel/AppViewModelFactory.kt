@@ -18,6 +18,9 @@ class AppViewModelFactory @Inject constructor(
             modelClass.isAssignableFrom(HomeViewModel::class.java) ->
                 HomeViewModel() as T
 
+            modelClass.isAssignableFrom(FavouriteViewModel::class.java) ->
+                FavouriteViewModel() as T
+
             modelClass.isAssignableFrom(AuthViewModel::class.java) ->
                 AuthViewModel(authRepository) as T
 
