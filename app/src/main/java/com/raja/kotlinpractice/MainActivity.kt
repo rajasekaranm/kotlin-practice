@@ -216,7 +216,8 @@ private class PreviewViewModelFactory : ViewModelProvider.Factory {
 
                             override suspend fun guestAccessToken(request: com.raja.kotlinpractice.data.remote.model.GuestAccessTokenRequest) =
                                 com.raja.kotlinpractice.data.remote.model.AuthTokenResponse("preview-guest")
-                        }
+                        },
+                        settingsRepository = previewSettingsRepository()
                     )
                 ) as T
 
@@ -257,4 +258,18 @@ private class PreviewViewModelFactory : ViewModelProvider.Factory {
             else -> error("Unknown ViewModel: ${modelClass.name}")
         }
     }
+
+    private fun previewSettingsRepository(): com.raja.kotlinpractice.data.local.SettingsRepository =
+        com.raja.kotlinpractice.data.local.SettingsRepository(
+            dataStore = object : androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences> {
+                override val data =
+                    kotlinx.coroutines.flow.flowOf(androidx.datastore.preferences.core.emptyPreferences())
+
+                override suspend fun updateData(
+                    transform: suspend (t: androidx.datastore.preferences.core.Preferences) -> androidx.datastore.preferences.core.Preferences
+                ): androidx.datastore.preferences.core.Preferences =
+                    transform(androidx.datastore.preferences.core.emptyPreferences())
+            },
+            ioDispatcher = kotlinx.coroutines.Dispatchers.Unconfined
+        )
 }

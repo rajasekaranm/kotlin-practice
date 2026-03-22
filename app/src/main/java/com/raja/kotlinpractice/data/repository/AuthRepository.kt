@@ -1,5 +1,6 @@
 package com.raja.kotlinpractice.data.repository
 
+import com.raja.kotlinpractice.data.local.SettingsRepository
 import com.raja.kotlinpractice.data.remote.AuthApiService
 import com.raja.kotlinpractice.data.remote.model.AuthMessageResponse
 import com.raja.kotlinpractice.data.remote.model.AuthTokenResponse
@@ -13,9 +14,16 @@ import javax.inject.Singleton
 @Singleton
 class AuthRepository @Inject constructor(
     private val authApiService: AuthApiService,
+    private val settingsRepository: SettingsRepository,
 ) {
-    suspend fun login(email: String, password: String): AuthTokenResponse =
-        authApiService.login(LoginRequest(email = email, password = password))
+    suspend fun login(email: String, password: String): AuthTokenResponse {
+        val response = authApiService.login(LoginRequest(email = email, password = password))
+        settingsRepository.saveAuthTokens(
+            accessToken = response.accessToken,
+            refreshToken = response.refreshToken,
+        )
+        return response
+    }
 
     suspend fun register(
         fullName: String,
@@ -34,11 +42,14 @@ class AuthRepository @Inject constructor(
     suspend fun resetPassword(email: String): AuthMessageResponse =
         authApiService.resetPassword(ResetPasswordRequest(email = email))
 
-    suspend fun guestAccessToken(deviceId: String, platform: String): AuthTokenResponse =
-        authApiService.guestAccessToken(
+    suspend fun guestAccessToken(deviceId: String, platform: String): AuthTokenResponse {
+        val response = authApiService.guestAccessToken(
             GuestAccessTokenRequest(
                 deviceId = deviceId,
                 platform = platform,
             )
         )
+        settingsRepository.saveGuestToken(response.accessToken)
+        return response
+    }
 }

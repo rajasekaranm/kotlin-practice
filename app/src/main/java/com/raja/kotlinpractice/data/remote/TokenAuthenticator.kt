@@ -12,7 +12,14 @@ class TokenAuthenticator @Inject constructor(
     private val authTokenProvider: AuthTokenProvider,
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (response.request.header("Authorization") == null) {
+        val path = response.request.url.encodedPath
+        val authHeader = response.request.header("Authorization") ?: return null
+
+        if (path.isGuestAuthEndpoint() || path.isUnauthenticatedEndpoint()) {
+            return null
+        }
+
+        if (!authHeader.startsWith("Bearer ")) {
             return null
         }
 
