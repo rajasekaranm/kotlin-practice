@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -6,6 +7,19 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
 }
+
+fun loadEnvFile(fileName: String): Properties {
+    val envFile = rootProject.file(fileName)
+    check(envFile.exists()) { "Missing environment file: ${envFile.path}" }
+
+    return Properties().apply {
+        envFile.inputStream().use(::load)
+    }
+}
+
+val devEnv = loadEnvFile(".env.dev")
+val stagingEnv = loadEnvFile(".env.staging")
+val productionEnv = loadEnvFile(".env.production")
 
 extensions.configure<ApplicationExtension>("android") {
     namespace = "com.raja.kotlinpractice"
@@ -36,8 +50,41 @@ extensions.configure<ApplicationExtension>("android") {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"${devEnv.getProperty("BASE_URL")}\""
+            )
+            buildConfigField("String", "ENVIRONMENT", "\"dev\"")
+        }
+        create("staging") {
+            dimension = "environment"
+            applicationIdSuffix = ".staging"
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"${stagingEnv.getProperty("BASE_URL")}\""
+            )
+            buildConfigField("String", "ENVIRONMENT", "\"staging\"")
+        }
+        create("production") {
+            dimension = "environment"
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"${productionEnv.getProperty("BASE_URL")}\""
+            )
+            buildConfigField("String", "ENVIRONMENT", "\"production\"")
+        }
+    }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

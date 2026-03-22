@@ -1,6 +1,7 @@
 package com.raja.kotlinpractice.di
 
 import android.content.Context
+import com.raja.kotlinpractice.BuildConfig
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.raja.kotlinpractice.data.local.userPreferencesDataStore
@@ -27,7 +28,7 @@ class AppModule(
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit = Retrofit.Builder()
-        .baseUrl("https://example.com/")
+        .baseUrl(BuildConfig.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
