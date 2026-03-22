@@ -24,14 +24,19 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.raja.kotlinpractice.ui.theme.KotlinPracticeTheme
+import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var appDependencies: AppDependencies
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (application as KotlinPracticeApplication).appComponent.inject(this)
         enableEdgeToEdge()
         setContent {
             KotlinPracticeTheme {
-                KotlinPracticeApp()
+                KotlinPracticeApp(appDependencies.summary())
             }
         }
     }
@@ -39,7 +44,7 @@ class MainActivity : ComponentActivity() {
 
 @PreviewScreenSizes
 @Composable
-fun KotlinPracticeApp() {
+fun KotlinPracticeApp(summary: String = "Library setup preview") {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
 
     NavigationSuiteScaffold(
@@ -61,7 +66,7 @@ fun KotlinPracticeApp() {
     ) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             Greeting(
-                name = "Android",
+                name = summary,
                 modifier = Modifier.padding(innerPadding)
             )
         }
@@ -80,7 +85,7 @@ enum class AppDestinations(
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = name,
         modifier = modifier
     )
 }
@@ -89,6 +94,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     KotlinPracticeTheme {
-        Greeting("Android")
+        Greeting("Configured libraries preview")
     }
 }
