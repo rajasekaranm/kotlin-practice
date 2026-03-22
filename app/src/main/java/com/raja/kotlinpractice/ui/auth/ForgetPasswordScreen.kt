@@ -11,8 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.raja.kotlinpractice.ui.theme.AppTextStyles
 import com.raja.kotlinpractice.ui.viewmodel.AuthViewModel
 
 @Composable
@@ -30,7 +30,7 @@ fun ForgetPasswordSection(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Forget Password", fontWeight = FontWeight.Bold)
+            Text(text = "Forget Password", style = AppTextStyles.h4)
             OutlinedTextField(
                 value = state.forgotPasswordEmail,
                 onValueChange = viewModel::onForgotPasswordEmailChanged,

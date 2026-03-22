@@ -13,9 +13,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.raja.kotlinpractice.ui.theme.AppTextStyles
 import com.raja.kotlinpractice.ui.viewmodel.AuthViewModel
 
 @Composable
@@ -35,7 +35,7 @@ fun LoginSection(
         ) {
             Text(
                 text = "Login",
-                fontWeight = FontWeight.Bold,
+                style = AppTextStyles.h4,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )

@@ -9,9 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import com.raja.kotlinpractice.ui.theme.AppSpacing
+import com.raja.kotlinpractice.ui.theme.AppTextStyles
 
 @Composable
 fun ScreenCard(
@@ -26,18 +26,19 @@ fun ScreenCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(AppSpacing.large),
+            verticalArrangement = Arrangement.spacedBy(AppSpacing.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = title,
-                fontWeight = FontWeight.Bold,
+                style = AppTextStyles.h4,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
             Text(
                 text = body,
+                style = AppTextStyles.bodyMedium,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )

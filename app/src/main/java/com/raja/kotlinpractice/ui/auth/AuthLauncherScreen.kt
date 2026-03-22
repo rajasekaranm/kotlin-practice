@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.raja.kotlinpractice.ui.theme.AppTextStyles
 import com.raja.kotlinpractice.ui.viewmodel.AuthRoute
 import com.raja.kotlinpractice.ui.viewmodel.AuthViewModel
 
@@ -79,6 +80,7 @@ fun AuthLauncherScreen(
 
                 Text(
                     text = state.appInfo,
+                    style = AppTextStyles.bodySmall,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
