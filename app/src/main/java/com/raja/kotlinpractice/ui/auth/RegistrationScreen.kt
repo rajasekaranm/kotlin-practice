@@ -49,8 +49,12 @@ fun RegistrationSection(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Password") }
             )
-            Button(onClick = viewModel::onRegistrationClick, modifier = Modifier.fillMaxWidth()) {
-                Text("Register")
+            Button(
+                onClick = viewModel::onRegistrationClick,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !state.isLoading
+            ) {
+                Text(if (state.isLoading) "Creating..." else "Register")
             }
         }
     }

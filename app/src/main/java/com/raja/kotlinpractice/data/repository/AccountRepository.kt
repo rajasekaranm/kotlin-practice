@@ -1,6 +1,8 @@
 package com.raja.kotlinpractice.data.repository
 
 import com.raja.kotlinpractice.data.remote.AccountApiService
+import com.raja.kotlinpractice.data.remote.ApiErrorHandler
+import com.raja.kotlinpractice.data.remote.ApiResult
 import com.raja.kotlinpractice.data.remote.model.AccountResponse
 import com.raja.kotlinpractice.data.remote.model.AuthMessageResponse
 import com.raja.kotlinpractice.data.remote.model.ChangePasswordRequest
@@ -12,33 +14,44 @@ import javax.inject.Singleton
 @Singleton
 class AccountRepository @Inject constructor(
     private val accountApiService: AccountApiService,
+    private val apiErrorHandler: ApiErrorHandler,
 ) {
-    suspend fun getAccount(): AccountResponse = accountApiService.getAccount()
+    suspend fun getAccount(): ApiResult<AccountResponse> =
+        apiErrorHandler.safeApiCall { accountApiService.getAccount() }
 
     suspend fun changePassword(
         currentPassword: String,
         newPassword: String,
-    ): AuthMessageResponse = accountApiService.changePassword(
-        ChangePasswordRequest(
-            currentPassword = currentPassword,
-            newPassword = newPassword,
-        )
-    )
+    ): ApiResult<AuthMessageResponse> =
+        apiErrorHandler.safeApiCall {
+            accountApiService.changePassword(
+                ChangePasswordRequest(
+                    currentPassword = currentPassword,
+                    newPassword = newPassword,
+                )
+            )
+        }
 
-    suspend fun deleteAccount(): AuthMessageResponse = accountApiService.deleteAccount()
+    suspend fun deleteAccount(): ApiResult<AuthMessageResponse> =
+        apiErrorHandler.safeApiCall { accountApiService.deleteAccount() }
 
     suspend fun updateAccount(
         fullName: String,
         phoneNumber: String? = null,
         bio: String? = null,
-    ): AccountResponse = accountApiService.updateAccount(
-        UpdateAccountRequest(
-            fullName = fullName,
-            phoneNumber = phoneNumber,
-            bio = bio,
-        )
-    )
+    ): ApiResult<AccountResponse> =
+        apiErrorHandler.safeApiCall {
+            accountApiService.updateAccount(
+                UpdateAccountRequest(
+                    fullName = fullName,
+                    phoneNumber = phoneNumber,
+                    bio = bio,
+                )
+            )
+        }
 
-    suspend fun uploadProfilePicture(profilePicture: MultipartBody.Part): AccountResponse =
-        accountApiService.uploadProfilePicture(profilePicture)
+    suspend fun uploadProfilePicture(profilePicture: MultipartBody.Part): ApiResult<AccountResponse> =
+        apiErrorHandler.safeApiCall {
+            accountApiService.uploadProfilePicture(profilePicture)
+        }
 }

@@ -65,8 +65,12 @@ fun LoginSection(
             ) {
                 Text("Create Account")
             }
-            Button(onClick = viewModel::onLoginClick, modifier = Modifier.fillMaxWidth()) {
-                Text("Login")
+            Button(
+                onClick = viewModel::onLoginClick,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !state.isLoading
+            ) {
+                Text(if (state.isLoading) "Signing In..." else "Login")
             }
         }
     }

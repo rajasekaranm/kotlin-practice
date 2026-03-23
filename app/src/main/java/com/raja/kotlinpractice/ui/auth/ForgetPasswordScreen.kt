@@ -37,8 +37,12 @@ fun ForgetPasswordSection(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Email") }
             )
-            Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
-                Text("Send Reset Link")
+            Button(
+                onClick = viewModel::onForgotPasswordClick,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !state.isLoading
+            ) {
+                Text(if (state.isLoading) "Sending..." else "Send Reset Link")
             }
         }
     }

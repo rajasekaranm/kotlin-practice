@@ -156,7 +156,8 @@ private class PreviewViewModelFactory : ViewModelProvider.Factory {
                             override suspend fun guestAccessToken(request: com.raja.kotlinpractice.data.remote.model.GuestAccessTokenRequest) =
                                 com.raja.kotlinpractice.data.remote.model.AuthTokenResponse("preview-guest")
                         },
-                        settingsRepository = previewSettingsRepository()
+                        settingsRepository = previewSettingsRepository(),
+                        apiErrorHandler = com.raja.kotlinpractice.data.remote.ApiErrorHandler()
                     )
                 ) as T
 
@@ -190,7 +191,8 @@ private class PreviewViewModelFactory : ViewModelProvider.Factory {
                                     fullName = "Preview User",
                                     email = "preview@example.com"
                                 )
-                        }
+                        },
+                        apiErrorHandler = com.raja.kotlinpractice.data.remote.ApiErrorHandler()
                     )
                 ) as T
 

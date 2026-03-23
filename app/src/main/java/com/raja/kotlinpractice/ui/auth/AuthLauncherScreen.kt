@@ -78,6 +78,33 @@ fun AuthLauncherScreen(
                     AuthRoute.FORGOT_PASSWORD -> ForgetPasswordSection(viewModel = viewModel)
                 }
 
+                state.errorMessage?.let { message ->
+                    Text(
+                        text = message,
+                        style = AppTextStyles.bodyMedium,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                state.infoMessage?.let { message ->
+                    Text(
+                        text = message,
+                        style = AppTextStyles.bodyMedium,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                if (state.isLoading) {
+                    Text(
+                        text = "Loading...",
+                        style = AppTextStyles.bodySmall,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
                 Text(
                     text = state.appInfo,
                     style = AppTextStyles.bodySmall,
