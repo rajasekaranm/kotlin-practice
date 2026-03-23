@@ -35,19 +35,31 @@ fun RegistrationSection(
                 value = state.registrationName,
                 onValueChange = viewModel::onRegistrationNameChanged,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Full Name") }
+                label = { Text("Full Name") },
+                isError = state.registrationNameError != null,
+                supportingText = {
+                    state.registrationNameError?.let { Text(it) }
+                }
             )
             OutlinedTextField(
                 value = state.registrationEmail,
                 onValueChange = viewModel::onRegistrationEmailChanged,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Email") }
+                label = { Text("Email") },
+                isError = state.registrationEmailError != null,
+                supportingText = {
+                    state.registrationEmailError?.let { Text(it) }
+                }
             )
             OutlinedTextField(
                 value = state.registrationPassword,
                 onValueChange = viewModel::onRegistrationPasswordChanged,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Password") }
+                label = { Text("Password") },
+                isError = state.registrationPasswordError != null,
+                supportingText = {
+                    state.registrationPasswordError?.let { Text(it) }
+                }
             )
             Button(
                 onClick = viewModel::onRegistrationClick,

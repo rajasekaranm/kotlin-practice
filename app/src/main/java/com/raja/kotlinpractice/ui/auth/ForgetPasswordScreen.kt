@@ -35,7 +35,11 @@ fun ForgetPasswordSection(
                 value = state.forgotPasswordEmail,
                 onValueChange = viewModel::onForgotPasswordEmailChanged,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Email") }
+                label = { Text("Email") },
+                isError = state.forgotPasswordEmailError != null,
+                supportingText = {
+                    state.forgotPasswordEmailError?.let { Text(it) }
+                }
             )
             Button(
                 onClick = viewModel::onForgotPasswordClick,

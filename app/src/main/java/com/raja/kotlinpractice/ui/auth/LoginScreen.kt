@@ -43,13 +43,21 @@ fun LoginSection(
                 value = state.loginEmail,
                 onValueChange = viewModel::onLoginEmailChanged,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Email") }
+                label = { Text("Email") },
+                isError = state.loginEmailError != null,
+                supportingText = {
+                    state.loginEmailError?.let { Text(it) }
+                }
             )
             OutlinedTextField(
                 value = state.loginPassword,
                 onValueChange = viewModel::onLoginPasswordChanged,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Password") }
+                label = { Text("Password") },
+                isError = state.loginPasswordError != null,
+                supportingText = {
+                    state.loginPasswordError?.let { Text(it) }
+                }
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
